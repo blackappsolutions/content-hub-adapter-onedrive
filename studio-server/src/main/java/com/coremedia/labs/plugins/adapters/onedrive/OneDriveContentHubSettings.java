@@ -12,4 +12,10 @@ public interface OneDriveContentHubSettings {
 
   String getDisplayName();
 
+  /**
+   * Optional. Can be used for non english Sharepoint installations, where the documents folder gets a localized name.
+   * In german it is called "Dokumente".
+   * If empty the OneDriveContentHubAdapter uses the default "Documents".
+   */
+  String getDocumentsFolderName();
 }

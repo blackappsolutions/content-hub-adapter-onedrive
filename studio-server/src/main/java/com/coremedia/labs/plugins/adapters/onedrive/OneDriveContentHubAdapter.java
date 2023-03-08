@@ -73,7 +73,7 @@ public class OneDriveContentHubAdapter implements ContentHubAdapter {
     if (siteIdMatcher.find()) {
       Site site = oneDriveService.getSite(driveId);
       List<Drive> siteDrives = oneDriveService.getDrivesForSiteName(driveId);
-      Optional<Drive> foundDrive = siteDrives.stream().filter(d -> "Documents".equals(d.name)).findFirst();
+      Optional<Drive> foundDrive = siteDrives.stream().filter(d -> getDocumentsFolderName().equals(d.name)).findFirst();
       if (!foundDrive.isPresent()) {
         // throw Exception
         throw new ContentHubException("Unable to initialize OneDrive connection for given drive id '" + driveId + "'.");
@@ -105,6 +105,22 @@ public class OneDriveContentHubAdapter implements ContentHubAdapter {
     }
 
     rootFolder = new OneDriveFolder(rootHubId, rootItem, rootDisplayName);
+  }
+
+  /**
+   * Fix for this error after login on freshly started studio-server:
+   2023-03-08 14:33:21 -  [INFO] (http-nio-41080-exec-10) com.coremedia.springframework.security.impl.Http200AuthenticationSuccessHandler [] - Successful Authentication - User: admin (coremedia:///cap/user/0), IP: 127.0.0.1
+   2023-03-08 14:33:22 -  [WARN] (http-nio-41080-exec-6) com.coremedia.cap.common.CapConnection [] - Server: reverse lookup of address 192.168.188.21 resolves to hostname 192.168.188.21, expected name is macBookAir2022.local
+   2023-03-08 14:33:23 -  [INFO] (http-nio-41080-exec-3) com.coremedia.labs.plugins.adapters.onedrive.service.OneDriveService [] - Fetching Site 'blackapp.sharepoint.com:/sites/corem-test'.
+   2023-03-08 14:33:24 -  [INFO] (http-nio-41080-exec-3) com.coremedia.labs.plugins.adapters.onedrive.service.OneDriveService [] - Fetching Drives for SharePoint site 'blackapp.sharepoint.com:/sites/corem-test'.
+   2023-03-08 14:33:24 -  [INFO] (http-nio-41080-exec-3) com.coremedia.labs.plugins.adapters.onedrive.service.OneDriveService [] - Fetching Site 'blackapp.sharepoint.com:/sites/corem-test'.
+   2023-03-08 14:33:24 -  [INFO] (http-nio-41080-exec-3) com.coremedia.labs.plugins.adapters.onedrive.service.OneDriveService [] - Fetching Drives for SharePoint site 'blackapp.sharepoint.com,544b38f5-d2d1-4dd1-b906-1e454a24983c,3b6e8101-136b-4176-9115-77387d4bbbc1'.
+   2023-03-08 14:33:25 - [ERROR] (http-nio-41080-exec-3) com.coremedia.contenthub.lib.ContentHubManager [] - Failed to initialize adapter for connection 'onedrive-asys':
+                                                         Unable to initialize OneDrive connection for given drive id 'blackapp.sharepoint.com:/sites/corem-test'.
+   */
+  private String getDocumentsFolderName() {
+    String documentsFolderName = settings.getDocumentsFolderName(); // see also javadoc of this method
+    return StringUtils.isEmpty(documentsFolderName) ? "Documents" : documentsFolderName;
   }
 
   // --- ContentHubAdapter ---
