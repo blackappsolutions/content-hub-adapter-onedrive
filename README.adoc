@@ -1,0 +1,28 @@
+= Content Hub Adapter "OneDrive"
+
+Fork of https://github.com/CoreMedia/content-hub-adapter-onedrive, that provides the following additions:
+
+. fixing a hard coded filter for SharePoints "Documents" folder which is "Dokumente" in german installationsM
+. Migration to CoreMedia 2301.1.0
+. Additional Documentation
+
+== Set up a "OneDrive" for testing
+Despite the name of this plugin presumes, this extension only works with MicroSoft's enterprise product "SharePoint".
+
+*There is no way to set it up with the appropriate consumer product "SharePoint".*
+
+"SharePoint" is part of https://www.microsoft.com/de-de/microsoft-365/business/microsoft-365-business-basic[Microsoft 365 Business Basic], which could be tested one month for free. You must provide a credit card, but you can cancel this subscription in this month at any time without being charged.
+
+You can create a SharePoint "Team Website" right after you enrolled.
+
+You must fill in this information into the field `driveId` in the link:docs/README.md[Studio Configuration] (see "Configure the Plugin").
+
+The get the settings values for
+
+. `clientId`
+. `clientSecret`
+. `tenantId`
+
+you must register an app in the "Azure Active Directory".
+![](docs/screenshots/Bildschirm­foto 2023-03-08 um 10.57.45.png)
+
