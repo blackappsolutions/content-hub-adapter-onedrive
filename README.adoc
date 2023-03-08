@@ -7,11 +7,13 @@ Fork of https://github.com/CoreMedia/content-hub-adapter-onedrive, that provides
 . Additional Documentation
 
 == Set up a "OneDrive" for testing
+
 Despite the name of this plugin presumes, this extension only works with MicroSoft's enterprise product "SharePoint".
 
-*There is no way to set it up with the appropriate consumer product "SharePoint".*
+*There is no way to set it up with the appropriate consumer product "OneDrive".*
 
-"SharePoint" is part of https://www.microsoft.com/de-de/microsoft-365/business/microsoft-365-business-basic[Microsoft 365 Business Basic], which could be tested one month for free. You must provide a credit card, but you can cancel this subscription in this month at any time without being charged.
+"SharePoint" is part of https://www.microsoft.com/de-de/microsoft-365/business/microsoft-365-business-basic[Microsoft 365 Business Basic], which could be tested one month for free.
+You must provide a credit card, but you can cancel this subscription in this month at any time without being charged.
 
 You can (and should) create a SharePoint "Team Website" right after you enrolled.
 
@@ -33,8 +35,7 @@ image:docs/screenshots/AzureActiveDirectoryOverview.png[Azure Active Directory O
 
 Now to the trickiest part: The App Registration.
 
-Open the collapsed sidebar menu Applications (or "Anwendungen" in german) and click on
-App-Registrations (or App-Registrierungen in german).
+Open the collapsed sidebar menu Applications (or "Anwendungen" in german) and click on App-Registrations (or App-Registrierungen in german).
 
 image:docs/screenshots/AppRegistrations.png[App-Registrations]
 
@@ -65,3 +66,66 @@ To do so, click on "Microsoft Graph (1)" and add `Sites.FullControl.All`.
 image:docs/screenshots/Application-Permissions.png[Application-Permissions]
 
 *It is crucial, that you select the right box "Application-Permissions" ("Anwendungsberechtigungen" in german), because otherwise it will not work!*
+
+To test your settings, I recommend to use the integration test link:studio-server/src/test/java/com/coremedia/labs/plugins/adapters/onedrive/service/OneDriveServiceIT.java[OneDriveServiceIT] first, before you build and integrate with studio. To do so, copy the appropriate values in the corresponding constants and execute the tests one by one.
+
+== How to develop and debug this studio plugin
+=== Frontend
+```shell
+$ cd studio-client
+$ nvm use 16
+$ pnpm install
+$ pnpm run -r build
+$ cd ##BP_ROOT##/apps/studio-client/global/studio
+$ pnpm run start -- --additionalPackagesDirs ~/clients/asys/content-hub-adapter-filesystem/studio-client/apps/main/content-hub-adapter-filesystem/dist
+```
+=== Backend
+* Build with `mvn clean install`
+* Copy the final zip artefact (studio-server.content-hub-adapter-onedrive-2.0.2-SNAPSHOT.zip) to the studio-servers plugin folder.
+* You can declare this folder via
+  - the VM-Parameter `plugins.directories` in the studio-server startup command-line (e.g. `-Dplugins.directories=/Users/mschwarz/clients/asys/cm11-prh/apps/studio-server/bundled-plugins`) or
+  - in an environment variable (mostly used in docker-ed environments) like `PLUGINS_DIRECTORIES=~/clients/asys/cm11-prh/apps/studio-server/bundled-plugins`
+* For debugging also add `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:40005` in the studio-server startup command-line. Then you can use the given link:.run/Local%20Studio%20Server.run.xml[run configuration] to attach this workspace to the running studio-server.
+* Checkpoint: After starting the studio-server, check if the copied zip file was automatically picked up and unpacked.
+
+For copy convenience, you can add this maven plugin in link:studio-server/pom.xml[]
+
+```xml
+<plugin>
+    <artifactId>maven-resources-plugin</artifactId>
+    <version>3.1.0</version>
+    <executions>
+        <execution>
+            <id>copy-resource-one</id>
+            <phase>install</phase>
+            <goals>
+                <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+                <outputDirectory>/Users/mschwarz/clients/asys/cm11-prh/apps/studio-server/bundled-plugins</outputDirectory>
+                <resources>
+                    <resource>
+                        <directory>target</directory>
+                        <includes>
+                            <include>studio-server.content-hub-adapter-onedrive-2.0.2-SNAPSHOT.zip</include>
+                        </includes>
+                    </resource>
+                </resources>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
+
+== How to release this plugin (pragmatic approach) and integrate it into studio-server
+* Develop and test
+* Increase the maven version
+* Then commit the final revision and tag it
+* Build the "binary" (with `mvn clean install`)
+* Create a release on gitHub and upload the binary
+* Copy the download link and put it into `apps/studio-server/spring-boot/studio-server-app/plugins.json`
+
+== How to test the plugin integration
+* The plugin is loaded after user login in studio
+* When everything went fine, you can see a new "onedrive" node on the root level of studio's library window.
+image:docs/screenshots/Integration.png[Integration]
