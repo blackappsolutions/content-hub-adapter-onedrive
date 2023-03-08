@@ -46,11 +46,22 @@ After that you can grab the `clientId`.
 
 image:docs/screenshots/AppOverview.png[Register App]
 
+Then go to "Certificates & Secret" ("Zertifikate & Geheimnisse" in german) and a "New secret client key ("Neuer geheimer Clientschlüssel" in german).
 
+image:docs/screenshots/CertificatesAndSecrets.png[Certificates and Secrets]
 
+Copy that "Value" ("Wert" in german) *immediately* (as you can't do it afterwards) and enter it as `clientSecret` in the "Studio Configuration".
 
+image:docs/screenshots/CopySecretValue.png[Secret value]
 
+Now you have retrieved all the config values the plugin needs.
 
+In order to use the integration, you need to set up the appropriate API-Permissions (in german "API-Berechtigungen").
 
+image:docs/screenshots/API-Permissions.png[API-Permissions]
 
+To do so, click on "Microsoft Graph (1)" and add `Sites.FullControl.All`.
 
+image:docs/screenshots/Application-Permissions.png[Application-Permissions]
+
+*It is crucial, that you select the right box "Application-Permissions" ("Anwendungsberechtigungen" in german), because otherwise it will not work!*
