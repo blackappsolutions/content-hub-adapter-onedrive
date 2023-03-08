@@ -13,7 +13,7 @@ Despite the name of this plugin presumes, this extension only works with MicroSo
 
 "SharePoint" is part of https://www.microsoft.com/de-de/microsoft-365/business/microsoft-365-business-basic[Microsoft 365 Business Basic], which could be tested one month for free. You must provide a credit card, but you can cancel this subscription in this month at any time without being charged.
 
-You can create a SharePoint "Team Website" right after you enrolled.
+You can (and should) create a SharePoint "Team Website" right after you enrolled.
 
 You must fill in this information into the field `driveId` in the link:docs/README.md[Studio Configuration] (see "Configure the Plugin").
 
@@ -23,6 +23,34 @@ The get the settings values for
 . `clientSecret`
 . `tenantId`
 
-you must register an app in the "Azure Active Directory".
-![](docs/screenshots/Bildschirm­foto 2023-03-08 um 10.57.45.png)
+go to link:https://entra.microsoft.com/#home[Microsoft Entra Admin Center] and register an app in the "Azure Active Directory".
+
+image:docs/screenshots/MsEntraAdminCenter.png[Microsoft Entra Admin Center]
+
+Here you can grab the `tenantId` (called "Mandanten-ID" on the image) from the overview page.
+
+image:docs/screenshots/AzureActiveDirectoryOverview.png[Azure Active Directory Overview]
+
+Now to the trickiest part: The App Registration.
+
+Open the collapsed sidebar menu Applications (or "Anwendungen" in german) and click on
+App-Registrations (or App-Registrierungen in german).
+
+image:docs/screenshots/AppRegistrations.png[App-Registrations]
+
+Then click on the Plus-Button ("New Registration" | "Neue Registrierung") and register your new app.
+
+image:docs/screenshots/RegisterApp.png[Register App]
+
+After that you can grab the `clientId`.
+
+image:docs/screenshots/AppOverview.png[Register App]
+
+
+
+
+
+
+
+
 
